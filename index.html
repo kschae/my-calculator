@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Day Counter</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: rgba(79, 70, 229, 0.1);
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --success: #10b981;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem 4rem 1rem;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fullscreen Fireworks Confetti Canvas Overlay */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Form Styling */
+        .form-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid #f1f5f9;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        input {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .btn-add {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-add:active {
+            transform: scale(0.98);
+        }
+
+        /* D-Day List Styling */
+        .dday-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .dday-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #f1f5f9;
+        }
+
+        .dday-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .dday-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .dday-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            word-break: break-all;
+            margin-right: 2rem;
+        }
+
+        .btn-delete {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.25rem;
+            line-height: 1;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, background-color 0.2s;
+        }
+
+        .btn-delete:hover {
+            color: var(--danger);
+            background-color: var(--danger-bg);
+        }
+
+        .dday-status-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .dday-status {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.03em;
+        }
+
+        .dday-status.is-today {
+            color: var(--danger);
+            animation: pulseText 1.5s infinite alternate;
+        }
+
+        .dday-status.is-past {
+            color: var(--text-muted);
+        }
+
+        @keyframes pulseText {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .celebrate-badge-btn {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .celebrate-badge-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .dday-date {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.75rem 0.5rem;
+        }
+
+        .timer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        .timer-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 0.1rem;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            background: #ffffff;
+            border-radius: var(--radius);
+            border: 2px dashed #cbd5e1;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas overlay for HTML Canvas Confetti Fireworks -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <header>
+        <h1>D-Day Counter</h1>
+        <p>목표 일자까지 남은 시간을 실시간으로 카운트다운합니다</p>
+    </header>
+
+    <div class="container">
+        <!-- Input Form -->
+        <div class="form-card">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="title">목표 이름</label>
+                    <input type="text" id="title" placeholder="예: 여름 휴가" maxlength="25">
+                </div>
+                <div class="input-group">
+                    <label for="date">목표 날짜</label>
+                    <input type="date" id="date">
+                </div>
+                <button class="btn-add" id="addBtn">추가하기</button>
+            </div>
+        </div>
+
+        <!-- D-Day List -->
+        <div id="ddayList" class="dday-list">
+            <!-- Cards will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let ddayItems = [];
+
+        // DOM Elements
+        const titleInput = document.getElementById('title');
+        const dateInput = document.getElementById('date');
+        const addBtn = document.getElementById('addBtn');
+        const ddayListContainer = document.getElementById('ddayList');
+        const canvas = document.getElementById('confettiCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Confetti Particle Engine Setup
+        let particles = [];
+        let animFrameId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 8 + 4;
+                this.color = ['#4f46e5', '#06b6d4', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'][Math.floor(Math.random() * 6)];
+                this.vx = (Math.random() - 0.5) * 12;
+                this.vy = (Math.random() - 1) * 14 - 3;
+                this.gravity = 0.35;
+                this.drag = 0.96;
+                this.opacity = 1;
+                this.fade = Math.random() * 0.015 + 0.008;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = (Math.random() - 0.5) * 10;
+            }
+
+            update() {
+                this.vx *= this.drag;
+                this.vy *= this.drag;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.opacity -= this.fade;
+                this.rotation += this.rotationSpeed;
+            }
+
+            draw(ctx) {
+                if (this.opacity <= 0) return;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.globalAlpha = Math.max(0, this.opacity);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size * 1.4);
+                ctx.restore();
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, idx) => {
+                p.update();
+                p.draw(ctx);
+                if (p.opacity <= 0 || p.y > canvas.height + 50) {
+                    particles.splice(idx, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                animFrameId = requestAnimationFrame(animateConfetti);
+            } else {
+                animFrameId = null;
+            }
+        }
+
+        function triggerConfetti(x = window.innerWidth / 2, y = window.innerHeight / 3) {
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle(x, y));
+            }
+            if (!animFrameId) {
+                animateConfetti();
+            }
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('stitch_dday_data');
+            if (savedData) {
+                ddayItems = JSON.parse(savedData);
+            } else {
+                // Seed default sample item if empty
+                const today = new Date();
+                const sampleDate = new Date(today);
+                sampleDate.setDate(today.getDate() + 7);
+                const month = String(sampleDate.getMonth() + 1).padStart(2, '0');
+                const day = String(sampleDate.getDate()).padStart(2, '0');
+
+                ddayItems = [
+                    {
+                        id: 1,
+                        title: '여름 휴가',
+                        targetDate: `${sampleDate.getFullYear()}-${month}-${day}`
+                    }
+                ];
+                saveData();
+            }
+            render();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('stitch_dday_data', JSON.stringify(ddayItems));
+        }
+
+        // Add New D-Day
+        addBtn.addEventListener('click', () => {
+            const title = titleInput.value.trim();
+            const date = dateInput.value;
+
+            if (!title || !date) {
+                alert('목표 이름과 날짜를 모두 입력해 주세요.');
+                return;
+            }
+
+            const newItem = {
+                id: Date.now(),
+                title: title,
+                targetDate: date
+            };
+
+            ddayItems.push(newItem);
+            saveData();
+            render();
+
+            // Reset inputs
+            titleInput.value = '';
+            dateInput.value = '';
+
+            // Trigger confetti celebrate effect
+            triggerConfetti();
+        });
+
+        // Delete D-Day
+        function deleteItem(id) {
+            ddayItems = ddayItems.filter(item => item.id !== id);
+            saveData();
+            render();
+        }
+
+        // Calculate Time Remaining
+        function calculateTime(targetDateStr) {
+            const now = new Date();
+            const target = new Date(targetDateStr + 'T00:00:00');
+            
+            // Difference in milliseconds
+            const diff = target.getTime() - now.getTime();
+            const absDiff = Math.abs(diff);
+
+            const days = Math.floor(absDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((absDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((absDiff % (1000 * 60)) / 1000);
+
+            // Check if today is the target date
+            const isToday = now.getFullYear() === target.getFullYear() &&
+                            now.getMonth() === target.getMonth() &&
+                            now.getDate() === target.getDate();
+
+            let statusText = '';
+            let statusClass = '';
+
+            if (isToday) {
+                statusText = 'D-Day';
+                statusClass = 'is-today';
+            } else if (diff > 0) {
+                statusText = `D-${days + 1}`;
+                statusClass = 'is-future';
+            } else {
+                statusText = `D+${days}`;
+                statusClass = 'is-past';
+            }
+
+            return {
+                statusText,
+                statusClass,
+                isToday,
+                days,
+                hours,
+                mins,
+                secs
+            };
+        }
+
+        // Render function
+        function render() {
+            if (ddayItems.length === 0) {
+                ddayListContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>등록된 D-Day가 없습니다.<br>새로운 목표를 추가해 보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            ddayListContainer.innerHTML = '';
+            ddayItems.forEach(item => {
+                const timeData = calculateTime(item.targetDate);
+                
+                const card = document.createElement('div');
+                card.className = 'dday-card';
+                card.innerHTML = `
+                    <button class="btn-delete" title="삭제" onclick="deleteItem(${item.id})">&times;</button>
+                    <div class="dday-header">
+                        <h2 class="dday-title">${escapeHtml(item.title)}</h2>
+                    </div>
+                    <div class="dday-status-group">
+                        <div class="dday-status ${timeData.statusClass}">${timeData.statusText}</div>
+                        <button class="celebrate-badge-btn" onclick="triggerConfetti(event.clientX, event.clientY)">🎉 축하하기</button>
+                    </div>
+                    <div class="dday-date">목표일: ${item.targetDate}</div>
+                    <div class="timer-grid">
+                        <div class="timer-item">
+                            <span class="timer-value">${timeData.days}</span>
+                            <span class="timer-label">Days</span>
+                        </div>
+                        <div class="timer-item">
+                            <span class="timer-value">${String(timeData.hours).padStart(2, '0')}</span>
+                            <span class="timer-label">Hrs</span>
+                        </div>
+                        <div class="timer-item">
+                            <span class="timer-value">${String(timeData.mins).padStart(2, '0')}</span>
+                            <span class="timer-label">Min</span>
+                        </div>
+                        <div class="timer-item">
+                            <span class="timer-value">${String(timeData.secs).padStart(2, '0')}</span>
+                            <span class="timer-label">Sec</span>
+                        </div>
+                    </div>
+                `;
+                ddayListContainer.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+
+        // Update timers every second
+        setInterval(render, 1000);
+
+        // Initial Load
+        loadData();
+    </script>
+</body>
+</html>
