@@ -3,7 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-Day Counter</title>
+    <!-- 검색엔진 최적화 (SEO) 메타 태그 -->
+    <title>D-Day 카운터 - 실시간 디데이 계산기 & 목표 타이머</title>
+    <meta name="description" content="시험 D-Day, 생일, 커플 기념일, 여름 휴가, 자격증 목표 일자까지 남은 시간을 실시간(일/시/분/초)으로 카운트다운하세요. 폭죽 효과와 자동 저장 기능 제공.">
+    <meta name="keywords" content="D-Day 카운터, 디데이 계산기, D-Day 계산기, 실시간 타이머, 기념일 계산기, 시험 디데이, 커플 디데이, D-Day 카운트다운, 디데이 앱">
+    <meta name="author" content="D-Day Counter">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://my-calculator-chi-seven.vercel.app/">
+
+    <!-- Open Graph (SNS & 카카오톡 공유 시 노출) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="D-Day 카운터">
+    <meta property="og:url" content="https://my-calculator-chi-seven.vercel.app/">
+    <meta property="og:title" content="D-Day 카운터 - 실시간 디데이 계산기 & 목표 타이머">
+    <meta property="og:description" content="중요한 목표 일자까지 남은 시간을 실시간으로 카운트다운하세요! 폭죽 연출과 자동 데이터 저장 지원.">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="D-Day 카운터 - 실시간 디데이 계산기">
+    <meta name="twitter:description" content="목표 일자까지 남은 시간(일/시/분/초)을 실시간으로 카운트다운합니다.">
+
+    <!-- 구글 서치 콘솔 소유권 확인 태그 -->
+    <meta name="google-site-verification" content="8JftXr8XLZgSN9iB0z2GvUU7vgFd4bjF76dZ7FrasyI" />
+
+    <!-- JSON-LD 구조화 데이터 (Google WebApplication & FAQ Schema) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "D-Day 카운터",
+          "url": "https://my-calculator-chi-seven.vercel.app/",
+          "description": "중요한 목표 일자까지 남은 시간을 실시간으로 계산해 주는 디데이 카운트다운 서비스입니다.",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "inLanguage": "ko-KR"
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "D-Day 카운터 사용법은 어떻게 되나요?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "목표 이름과 목표 날짜를 입력한 후 '추가하기' 버튼을 누르면 실시간으로 남은 일, 시간, 분, 초 단위 카운트다운이 시작됩니다."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "입력한 D-Day 데이터는 안전하게 저장되나요?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "네, 입력하신 목표 데이터는 브라우저 로컬 저장소(LocalStorage)에 안전하게 자동 저장되므로 페이지를 새로고침하거나 브라우저를 다시 열어도 데이터가 유지됩니다."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     <style>
         :root {
             --primary: #4f46e5;
@@ -307,6 +369,39 @@
             font-size: 1rem;
             line-height: 1.6;
         }
+
+        /* SEO Content Section */
+        .seo-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        .seo-section h2 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+        .seo-section h3 {
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-top: 1rem;
+            margin-bottom: 0.35rem;
+            font-weight: 600;
+        }
+        .seo-section p {
+            margin-bottom: 0.75rem;
+        }
+        .seo-section ul {
+            padding-left: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -339,6 +434,19 @@
         <div id="ddayList" class="dday-list">
             <!-- Cards will be injected here -->
         </div>
+
+        <!-- SEO Text Content Section for Crawlers -->
+        <article class="seo-section">
+            <h2>D-Day 카운터 - 실시간 디데이 계산기</h2>
+            <p>D-Day 카운터는 수능·자격증 시험 디데이, 연인과의 커플 기념일, 생일, 여름 휴가, 퇴사일 등 소중한 목표 날짜까지 남은 시간을 <strong>일(Days), 시간(Hours), 분(Minutes), 초(Seconds)</strong> 단위로 실시간으로 계산해 주는 웹 타이머 서비스입니다.</p>
+            
+            <h3>주요 기능</h3>
+            <ul>
+                <li><strong>실시간 타이머:</strong> 1초 단위로 정밀하게 차감되는 디데이 카운트다운</li>
+                <li><strong>자동 데이터 저장:</strong> 작성한 목표는 브라우저 저장소(LocalStorage)에 안전하게 보관</li>
+                <li><strong>축하 폭죽 연출:</strong> 목표 달성 및 추가 시 신나는 Canvas 폭죽(Confetti) 효과</li>
+            </ul>
+        </article>
     </div>
 
     <script>

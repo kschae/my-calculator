@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://my-calculator-chi-seven.vercel.app/sitemap.xml
