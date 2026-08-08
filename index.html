@@ -402,6 +402,132 @@
             padding-left: 1.2rem;
             margin-bottom: 0.5rem;
         }
+
+        /* Footer Styling */
+        .app-footer {
+            margin-top: 3rem;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        .footer-links {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .footer-link-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: underline;
+            padding: 0;
+        }
+        .footer-link-btn:hover {
+            color: var(--primary-hover);
+        }
+        .footer-divider {
+            color: #cbd5e1;
+        }
+
+        /* Modal Overlay & Card Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease-in-out;
+            padding: 1.5rem;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: #ffffff;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .modal-header h2 {
+            font-size: 1.15rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.25rem;
+        }
+        .modal-close:hover {
+            color: var(--text-main);
+        }
+        .modal-body {
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+        .modal-body h3 {
+            font-size: 0.95rem;
+            color: var(--primary);
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .modal-body p {
+            margin-bottom: 0.75rem;
+            color: #475569;
+        }
+        .modal-body ul {
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #475569;
+        }
+        .modal-body a {
+            color: var(--primary);
+        }
+        .modal-date {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -447,6 +573,61 @@
                 <li><strong>축하 폭죽 연출:</strong> 목표 달성 및 추가 시 신나는 Canvas 폭죽(Confetti) 효과</li>
             </ul>
         </article>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>&copy; 2026 D-Day Counter. All rights reserved.</p>
+        <div class="footer-links">
+            <button type="button" class="footer-link-btn" id="privacyBtn">개인정보처리방침 (Privacy Policy)</button>
+            <span class="footer-divider">|</span>
+            <button type="button" class="footer-link-btn" id="termsBtn">서비스 이용약관</button>
+        </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>개인정보처리방침 (Privacy Policy)</h2>
+                <button type="button" class="modal-close" id="closePrivacyModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>본 디데이 카운터 서비스(이하 "서비스")는 이용자의 개인정보보호를 중요시하며, 관련 법령을 준수합니다.</p>
+                
+                <h3>1. 개인정보 수집 및 저장 방식</h3>
+                <p>본 서비스는 별도의 회원가입이나 개인 식별 정보(이름, 이메일, 연락처 등)를 서버로 전송하여 수집하지 않습니다. 이용자가 입력한 D-Day 목표 데이터(목표명, 날짜)는 이용자의 브라우저 <strong>로컬 저장소(LocalStorage)</strong>에만 보관되며 외부로 유출되지 않습니다.</p>
+
+                <h3>2. 쿠키(Cookie) 및 서드파티 광고(Google AdSense)</h3>
+                <p>본 서비스는 Google AdSense 및 Google Analytics 등의 타사 광고 및 분석 서비스를 이용할 수 있습니다. 구글 등 서드파티 제공업체는 이용자의 웹사이트 방문 기록을 기반으로 맞춤형 광고를 제공하기 위해 쿠키(Cookie)를 사용합니다.</p>
+                <ul>
+                    <li>이용자는 웹 브라우저 옵션 설정을 통해 쿠키 허용/차단을 선택할 수 있습니다.</li>
+                    <li>구글 광고 정책 및 개인정보 처리에 대한 자세한 정보는 <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google 개인정보보호 및 약관</a>에서 확인하실 수 있습니다.</li>
+                </ul>
+
+                <h3>3. 개인정보 관련 문의</h3>
+                <p>본 서비스 이용 중 개인정보 관련 문의사항이 있으신 경우 서비스 관리자에게 문의하여 주시기 바랍니다.</p>
+                <p class="modal-date">시행 일자: 2026년 8월 8일</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>서비스 이용약관</h2>
+                <button type="button" class="modal-close" id="closeTermsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>1. 서비스 목적</h3>
+                <p>본 서비스는 실시간 카운트다운 타이머 및 목표 일정 관리 기능을 무료로 제공합니다.</p>
+
+                <h3>2. 서비스 이용 조건 및 책임 제한</h3>
+                <p>본 서비스는 브라우저 로컬 저장소를 활용하므로, 이용자의 기기 변경/브라우저 초기화로 인한 데이터 삭제에 대해 책임을 지지 않습니다. 서비스의 무단 복제 및 악의적 공격은 금지됩니다.</p>
+                <p class="modal-date">시행 일자: 2026년 8월 8일</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -708,6 +889,36 @@
 
         // Initial Load
         loadData();
+
+        // Modal Event Handlers for Privacy Policy & Terms
+        const privacyModal = document.getElementById('privacyModal');
+        const termsModal = document.getElementById('termsModal');
+        const privacyBtn = document.getElementById('privacyBtn');
+        const termsBtn = document.getElementById('termsBtn');
+        const closePrivacyModal = document.getElementById('closePrivacyModal');
+        const closeTermsModal = document.getElementById('closeTermsModal');
+
+        function openModal(modal) {
+            if (!modal) return;
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeModal(modal) {
+            if (!modal) return;
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        if (privacyBtn) privacyBtn.addEventListener('click', () => openModal(privacyModal));
+        if (termsBtn) termsBtn.addEventListener('click', () => openModal(termsModal));
+        if (closePrivacyModal) closePrivacyModal.addEventListener('click', () => closeModal(privacyModal));
+        if (closeTermsModal) closeTermsModal.addEventListener('click', () => closeModal(termsModal));
+
+        window.addEventListener('click', (e) => {
+            if (e.target === privacyModal) closeModal(privacyModal);
+            if (e.target === termsModal) closeModal(termsModal);
+        });
     </script>
 </body>
 </html>
