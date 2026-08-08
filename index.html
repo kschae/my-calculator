@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVMC1BM5PB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-BVMC1BM5PB');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 검색엔진 최적화 (SEO) 메타 태그 -->
@@ -774,6 +783,13 @@
 
             // Trigger confetti celebrate effect
             triggerConfetti();
+
+            // Track GA4 event
+            if (typeof gtag === 'function') {
+                gtag('event', 'add_dday', {
+                    'event_category': 'engagement'
+                });
+            }
         });
 
         // Delete D-Day
